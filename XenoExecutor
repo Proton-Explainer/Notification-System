@@ -1,0 +1,194 @@
+-- Create the GUI elements
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TitleLabel = Instance.new("TextLabel")
+local ExecuteButton = Instance.new("TextButton")
+local InputBox = Instance.new("TextBox")
+
+-- Set properties for the ScreenGui
+ScreenGui.Name = "XenoExecutor"
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Set properties for the Frame
+Frame.Size = UDim2.new(0.5, 0, 0.5, 0) -- Adjust size as needed
+Frame.Position = UDim2.new(0.25, 0, 0.25, 0) -- Centered on screen
+Frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Frame.BorderSizePixel = 0
+Frame.Visible = false -- Start with the frame hidden
+Frame.Parent = ScreenGui
+
+-- Add rounded corners to the Frame
+UICorner.CornerRadius = UDim.new(0.1, 0) -- Adjust corner radius for roundness
+UICorner.Parent = Frame
+
+-- Set properties for the Title Label
+TitleLabel.Size = UDim2.new(1, 0, 0.2, 0)
+TitleLabel.Position = UDim2.new(0, 0, 0, 0)
+TitleLabel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.TextSize = 24
+TitleLabel.Text = "Xeno Executor"
+TitleLabel.Parent = Frame
+
+-- Set properties for the Input Box (typing area)
+InputBox.Size = UDim2.new(0.8, 0, 0.3, 0) -- Adjust height as needed
+InputBox.Position = UDim2.new(0.1, 0, 0.25, 0)
+InputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+InputBox.TextSize = 18
+InputBox.PlaceholderText = "Enter your script here..."
+InputBox.ClearTextOnFocus = true
+InputBox.Parent = Frame
+
+-- Set properties for the Execute Button
+ExecuteButton.Size = UDim2.new(0.8, 0, 0.1, 0)
+ExecuteButton.Position = UDim2.new(0.1, 0, 0.6, 0)
+ExecuteButton.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
+ExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ExecuteButton.TextSize = 20
+ExecuteButton.Text = "Execute Script"
+ExecuteButton.Parent = Frame
+
+-- Function to load Infinite Yield
+local function loadInfiniteYield()
+    local infiniteYieldUrl = "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"
+    loadstring(game:HttpGet(infiniteYieldUrl))()
+end
+
+-- Connect button click to load Infinite Yield and execute script from InputBox
+ExecuteButton.MouseButton1Click:Connect(function()
+    loadInfiniteYield() -- Load Infinite Yield first
+
+    local scriptToExecute = InputBox.Text -- Get text from InputBox
+    if scriptToExecute and scriptToExecute ~= "" then
+        loadstring(scriptToExecute)()
+    end
+end)
+
+-- Make the Frame movable by dragging it with the mouse
+local dragging
+local dragStartPos
+local startPos
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then -- Check if left mouse button is pressed
+        dragging = true
+        dragStartPos = input.Position -- Capture starting position of drag
+        startPos = Frame.Position -- Capture starting position of frame
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then -- Check if mouse button is released
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then -- If moving mouse while dragging is true
+        local deltaPos = input.Position - dragStartPos -- Calculate change in position of mouse drag
+        Frame.Position = startPos + UDim2.new(0, deltaPos.X, 0, deltaPos.Y) -- Update frame position based on mouse movement 
+    end 
+end)
+
+-- Toggle function to show/hide the GUI using F6 key or mobile chat button (circle icon)
+local function toggleGUI()
+    Frame.Visible = not Frame.Visible -- Toggle visibility of the frame
+end
+
+-- Keybind for PC (F6) to toggle GUI visibility 
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.F6 then -- Check if F6 is pressed 
+        toggleGUI() 
+    end 
+end)
+
+-- Mobile toggle using chat circle button (you can customize this part as needed)
+game.Players.LocalPlayer.Chatted:Connect(function(message) 
+    if message == "/toggle" then -- Type /toggle in chat to open/close GUI on mobile 
+        toggleGUI() 
+    end 
+end)
+
+-- Create a container for custom notifications
+local NotificationContainer = Instance.new("ScreenGui")
+NotificationContainer.Name = "CustomNotifications"
+NotificationContainer.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Table to keep track of active notifications
+local activeNotifications = {}
+
+-- Function to update notification positions
+local function updateNotificationPositions()
+    for i, notification in ipairs(activeNotifications) do
+        notification:TweenPosition(
+            UDim2.new(1, -260, 1, -110 - (i-1) * 110),
+            Enum.EasingDirection.Out,
+            Enum.EasingStyle.Quart,
+            0.3,
+            true
+        )
+    end
+end
+
+-- Function to show customizable notification
+local function showCustomNotification(title, text, duration)
+    local Notification = Instance.new("Frame")
+    Notification.Size = UDim2.new(0, 250, 0, 100)
+    Notification.Position = UDim2.new(1, -260, 1, -110)
+    Notification.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Notification.BorderSizePixel = 0
+    Notification.Parent = NotificationContainer
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 10)
+    UICorner.Parent = Notification
+
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Size = UDim2.new(1, 0, 0, 30)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TitleLabel.TextSize = 18
+    TitleLabel.Font = Enum.Font.SourceSansBold
+    TitleLabel.Text = title
+    TitleLabel.Parent = Notification
+
+    local TextLabel = Instance.new("TextLabel")
+    TextLabel.Size = UDim2.new(1, -20, 1, -40)
+    TextLabel.Position = UDim2.new(0, 10, 0, 30)
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    TextLabel.TextSize = 14
+    TextLabel.Font = Enum.Font.SourceSans
+    TextLabel.Text = text
+    TextLabel.TextWrapped = true
+    TextLabel.Parent = Notification
+
+    -- Add notification to active list and update positions
+    table.insert(activeNotifications, Notification)
+    updateNotificationPositions()
+
+    -- Remove the notification after the specified duration
+    delay(duration, function()
+        for i, v in ipairs(activeNotifications) do
+            if v == Notification then
+                table.remove(activeNotifications, i)
+                break
+            end
+        end
+        Notification:Destroy()
+        updateNotificationPositions()
+    end)
+end
+
+-- Show notifications
+showCustomNotification("Toggability", "To Toggle For Computers/Mac Press The F6 Button On Your Keyboard - Mobile Compatibility Coming Soon!", 25)
+showCustomNotification("Welcome!", "Xeno Has Been Loaded - Contact me At MoreCheatz@proton.me For Requests Or More Information About this Executor!", 10)
+showCustomNotification("Details", "Byfron Bypass: ✔", 15)
+showCustomNotification("Details", "No Detection: ✔", 15)
+showCustomNotification("Details", "Level 5 Executor", 15)
+showCustomNotification("Contact", "MoreCheatz@gmail.com - MoreCheatz@proton.me", 30)
+
+-- Optional: Automatically load Infinite Yield when the GUI is initialized (if desired)
+loadInfiniteYield()
