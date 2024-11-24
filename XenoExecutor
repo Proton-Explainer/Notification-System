@@ -183,12 +183,12 @@ local function showCustomNotification(title, text, duration)
 end
 
 -- Show notifications
-showCustomNotification("Toggability", "To Toggle For Computers/Mac Press The F9 Button On Your Keyboard - Mobile Compatibility Coming Soon!", 10)
+showCustomNotification("Toggability", "To Toggle For Computers/Mac Press The F9 Button On Your Keyboard - Mobile Compatibility Coming Soon!", 30)
 showCustomNotification("Welcome!", "Xeno Has Been Loaded - Contact me At MoreCheatz@proton.me For Requests Or More Information About this Executor!", 10)
 showCustomNotification("Details", "Byfron Bypass: ✔", 15)
 showCustomNotification("Details", "No Detection: ✔", 15)
 showCustomNotification("Details", "Level 5 Executor", 15)
-showCustomNotification("Contact", "MoreCheatz@gmail.com - MoreCheatz@proton.me", 15)
+showCustomNotification("Contact", "MoreCheatz@gmail.com - MoreCheatz@proton.me", 30)
 
 -- Optional: Automatically load Infinite Yield when the GUI is initialized (if desired)
 loadInfiniteYield()
