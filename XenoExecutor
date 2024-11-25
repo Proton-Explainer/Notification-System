@@ -97,7 +97,7 @@ local function toggleGUI()
 end
 
 game:GetService("UserInputService").InputBegan:Connect(function(input)
-    if input.KeyCode == Enum.KeyCode.F10 then -- Check if F6 is pressed 
+    if input.KeyCode == Enum.KeyCode.F4 then -- Check if F6 is pressed 
         toggleGUI() 
     end 
 end)
@@ -181,7 +181,7 @@ local function showCustomNotification(title, text, duration)
 end
 
 -- Show notifications
-showCustomNotification("Toggability", "To Toggle For Computers/Mac Press The F10 Button On Your Keyboard - Mobile Compatibility Coming Soon!", 30)
+showCustomNotification("Toggability", "To Toggle For Computers/Mac Press The F4 Button On Your Keyboard - Mobile Compatibility Coming Soon!", 30)
 showCustomNotification("Welcome!", "Xeno Has Been Loaded - Contact me At MoreCheatz@proton.me For Requests Or More Information About this Executor!", 10)
 showCustomNotification("Details", "Byfron Bypass: ✔", 15)
 showCustomNotification("Details", "No Detection: ✔", 15)
